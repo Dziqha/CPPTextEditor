@@ -55,7 +55,7 @@ void displayMenu() {
             displayMenu();
             break;
         case 2:
-            listFiles();
+            
             readFile();
             displayMenu();
             break;
@@ -110,8 +110,19 @@ void newFile() {
 
 void readFile() {
     int fileNumber;
-    cout << "Enter the number of the file to read: ";
-    cin >> fileNumber;
+    listFiles();
+    cout << "Enter the number of the file to read (or enter 0 to cancel): ";
+    if (!(cin >> fileNumber) || fileNumber < 0) {
+        cout << "Invalid input. Please enter a valid number or 0 to cancel." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+
+    if (fileNumber == 0) {
+        cout << "Operation canceled." << endl;
+        return;
+    }
 
     // Create a vector of FileInfo structs
     vector<FileInfo> files;
@@ -165,10 +176,14 @@ void editFile() {
 
     int fileNumber;
     cout << "Enter the number of the file to edit: ";
-    cin >> fileNumber;
+    if (!(cin >> fileNumber) || fileNumber < 1) {
+        cout << "Invalid input. Please enter a valid number greater than 0." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
 
     // Create a vector of FileInfo structs
-    //menyimpan informasi setiap file dalam bentuk objek FileInfo
     vector<FileInfo> files;
 
     int currentFileNumber = 1;  // To assign a number to each file
@@ -222,9 +237,6 @@ void editFile() {
         } else {
             // Edit the selected file content
             string text;
-            //ios::trunc merupakan parameter untuk mode pembukaan file yang menunjukkan bahwa 
-            //file harus dibuka dalam mode trunckate (memotong file ke ukuran nol) sebelum menulis.
-            // Jadi, jika file sudah ada, isinya akan dihapus.
             ofstream file(selectedFile->path, ios::trunc);  // Truncate mode
 
             if (!file.is_open()) {
@@ -250,18 +262,25 @@ void editFile() {
 
     // Free memory after using the string
     for (auto& file : files) {
-        //Perintah delete digunakan untuk mengembalikan memori 
-        //yang sebelumnya dialokasikan secara dinamis oleh operator new.
         delete file.filename;
     }
 }
 
-
 void deleteFile() {
     int fileNumber;
     listFiles();
-    cout << "Enter the number of the file to delete: ";
-    cin >> fileNumber;
+    cout << "Enter the number of the file to delete (or enter 0 to cancel): ";
+    if (!(cin >> fileNumber) || fileNumber < 0) {
+        cout << "Invalid input. Please enter a valid number or 0 to cancel." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+
+    if (fileNumber == 0) {
+        cout << "Operation canceled." << endl;
+        return;
+    }
 
     // Create a vector of FileInfo structs
     vector<FileInfo> files;
